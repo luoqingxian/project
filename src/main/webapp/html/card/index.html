@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <link href="../../static/css/login.css" rel="stylesheet" type="text/css">
+    <link href="../../static/css/global.css" rel="stylesheet" type="text/css">
+
+    <link href="../../static/js/layui/css/layui.css" rel="stylesheet" type="text/css">
+    <script src="../../static/js/layui/layui.js" type="text/javascript"></script>
+    <script src="../../static/js/jquery.js" type="text/javascript"></script>
+    <title>Title</title>
+    <style>
+        *{
+            font-size: 20px;
+        }
+        .WH{
+            height: 50px;
+            line-height: 50px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="layui-row WH" style="background-color: #00f7de">
+    <div class="layui-col-xs1 textR">
+        条件查询:
+    </div>
+</div>
+
+<div class="layui-row WH" style="background-color: #00f7de">
+    <div class="layui-col-xs1 textR">卡号:</div>
+    <div class="layui-col-xs2">
+        <input type="text" autocomplete="off" class="startText layui-input">
+    </div>
+    <div class="layui-col-xs1 textC">至</div>
+    <div class="layui-col-xs2">
+        <input type="text" autocomplete="off" class="endText layui-input">
+    </div>
+    <div class="layui-col-xs1 textC">
+        卡状态
+    </div>
+    <div class="layui-col-xs1">
+        <select class="status layui-btn demo1">
+            <option name="所有" value="">所有</option>
+            <option name="已审核" value="已审核">已审核</option>
+            <option name="未审核" value="未审核">未审核</option>
+        </select>
+    </div>
+</div>
+
+<div class="layui-row WH" style="background-color: #00f7de">
+    <div class="layui-col-xs1 textR">导入日期:</div>
+    <div class="layui-col-xs2">
+        <input type="date" autocomplete="off" class="startTime layui-input">
+    </div>
+    <div class="layui-col-xs1 textC">至</div>
+    <div class="layui-col-xs2">
+        <input type="date" autocomplete="off" class="endTime layui-input">
+    </div>
+    <div class="layui-col-xs1 textC">
+        <button class="layui-btn layui-btn-normal" onclick="selectBtn()">查 询</button>
+    </div>
+</div>
+<table class="layui-hide" id="test"></table>
+
+<div class="layui-row WH" style="background-color: #00f7de">
+    <div class="layui-col-xs1 textR">
+        <button class="layui-btn layui-btn-normal" onclick="cut(1)">上一页</button>
+    </div>
+    <div class="layui-col-xs1 textC">
+        <span class="ins">1</span>
+        /
+        <sapn class="page">10</sapn>
+    </div>
+    <div class="layui-col-xs1 textR">
+        <button class="layui-btn layui-btn-normal" onclick="cut(2)">下一页</button>
+    </div>
+</div>
+
+</body>
+
+<script id="cz" type="text/html">
+    <button type="button" class="layui-btn layui-btn-sm">删除</button>
+    <button type="button" class="layui-btn layui-btn-sm">删除</button>
+    <button type="button" class="layui-btn layui-btn-sm">删除</button>
+</script>
+
+<script>
+    var ins = $(".ins").text();
+    var ins1 = $(".page").text();
+    console.log(ins)
+    console.log(ins1)
+    layui.use('table', function () {
+        var a = abc();
+        var table = layui.table;
+        table.render({
+            elem: '#test'
+            , url: '/cards/card'
+            , cellMinWidth: 100 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , cols: [[
+                {field: 'cardId', title: '编号'},
+                {field: 'cardNo', title: '卡号', sort: true},
+                {field: 'applyTime', title: '导入日期'},
+                {field: 'status', title: '卡状态'},
+                {field: 'classify', title: '操作', align: 'center', templet: "#cz"},
+            ]],
+            where:{
+                startText:a.startText,
+                endText:a.endText,
+                startTime:a.startTime,
+                endTime:a.endTime,
+                status:a.status,
+                ins:a.ins,
+            },
+            parseData:function (res){
+                $(".page").text(Math.floor(res.page / 5));
+            }
+        });
+    });
+
+    function cut(sign){
+        if (sign === 1){
+            var ins = parseInt($(".ins").text());
+            if (ins>1){
+                $(".ins").text(ins - 1)
+                laod()
+            }
+
+        } else if(sign === 2){
+            var ins = parseInt($(".ins").text());
+            var page = parseInt($(".page").text());
+            if (ins < page) {
+                $(".ins").text(ins + 1)
+                laod()
+            }
+        }
+
+    }
+
+    function abc(){
+        var a = {
+            startText : $(".startText").val(),
+            endText : $(".endText").val(),
+            startTime : $(".startTime").val(),
+            endTime : $(".endTime").val(),
+            status : $(".status").val(),
+            ins : $(".ins").text(),
+            page : $(".page").text(),
+        }
+        return a
+    }
+
+    function laod(){
+        var a = abc()
+        var table = layui.table;
+        table.reload('test', {
+            url: '/cards/card',
+            where: {
+                startText:a.startText,
+                endText:a.endText,
+                startTime:a.startTime,
+                endTime:a.endTime,
+                status:a.status,
+                ins:a.ins,
+            },
+            parseData:function (res) {
+                $(".page").text(Math.floor(res.page / 5));
+            }
+        });
+    }
+
+    function selectBtn(){
+        $(".ins").text("1")
+        laod()
+    }
+
+</script>
+
+</html>

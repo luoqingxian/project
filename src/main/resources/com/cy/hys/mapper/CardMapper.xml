@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cy.hys.mapper.CardMapper">
+    <select id="selectCard" resultType="com.cy.hys.bean.Card">
+        select * from card
+    </select>
+
+    <select id="getCard" resultType="com.cy.hys.bean.Card">
+        select *
+        from card
+        <where>
+            <if test="card.startTime!=null and card.endTime!=null">
+                applyTime BETWEEN #{card.startTime} and #{card.endTime}
+            </if>
+            <if test="card.status != null">
+                status = #{card.status}
+            </if>
+        </where>
+
+        limit #{card.ins},5;
+    </select>
+
+    <select id="getPage" resultType="int">
+        select count(*)
+        from card
+        <where>
+            <if test="card.startTime!=null and card.endTime!=null">
+                applyTime BETWEEN #{card.startTime} and #{card.endTime}
+            </if>
+            <if test="card.status != null">
+                status = #{card.status}
+            </if>
+        </where>
+    </select>
+
+    <insert id="batchImportCard">
+        insert into card(cardNo,applyTime,status)
+        values
+        <foreach collection="list" item="ins" separator=",">
+            (#{ins},now(),'未审核')
+        </foreach>
+    </insert>
+</mapper>

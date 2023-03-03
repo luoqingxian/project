@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <properties resource="jdbc.properties"/>
+    <settings>
+        <!--    开启驼峰命名法    -->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <!--    二级缓存 开启true 关闭false    -->
+        <setting name="cacheEnabled" value="false"/>
+        <!--    日志打印    -->
+<!--        <setting name="logImpl" value="STDOUT_LOGGING"/>-->
+    </settings>
+
+<!--    <environments default="dev">-->
+<!--        <environment id="dev">-->
+<!--            <transactionManager type="JDBC"/>-->
+<!--            <dataSource type="POOLED">-->
+<!--                <property name="driver" value="${driverClassName}"/>-->
+<!--                <property name="url" value="${url}"/>-->
+<!--                <property name="username" value="${username}"/>-->
+<!--                <property name="password" value="${password}"/>-->
+<!--            </dataSource>-->
+<!--        </environment>-->
+<!--    </environments>-->
+    <mappers>
+        <!--    危险区域，文件一一对应    -->
+
+    </mappers>
+</configuration>

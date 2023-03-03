@@ -1,0 +1,12 @@
+.textL{
+    text-align: left;
+    padding-right: 10px;
+}
+
+.textR{
+    text-align: right;
+    padding-right: 10px;
+}
+.textC{
+    text-align: center;
+}

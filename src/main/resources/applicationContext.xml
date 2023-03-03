@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns="http://www.springframework.org/schema/beans"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.2.xsd"
+>
+    <!--  启动自动扫描机制 附带启动注解解析器 <context:annotation-config />-->
+    <context:component-scan base-package="com.cy.hys"/>
+    <!--  源文件导入  -->
+    <context:property-placeholder location="classpath:jdbc.properties" system-properties-mode="NEVER"/>
+
+    <!--  druid数据源  -->
+    <bean class="com.alibaba.druid.pool.DruidDataSource" id="druidDataSource">
+        <property name="driverClassName" value="${driverClassName}"/>
+        <property name="url" value="${url}"/>
+        <property name="username" value="${username}"/>
+        <property name="password" value="${password}"/>
+    </bean>
+
+    <!--  jdbc数据源 初始化  -->
+        <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource" id="dataSource">
+            <property name="driverClassName" value="${driverClassName}"/>
+            <property name="url" value="${url}"/>
+            <property name="username" value="${username}"/>
+            <property name="password" value="${password}"/>
+        </bean>
+
+    <!--  jdbc注入数据源  -->
+        <bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager" id="dataSource2">
+            <property name="dataSource" ref="druidDataSource"/>
+        </bean>
+
+    <!--    sqlSessionFactory工厂-->
+    <bean class="org.mybatis.spring.SqlSessionFactoryBean" id="sqlSessionFactory">
+        <!--    注入数据源    -->
+        <property name="dataSource" ref="druidDataSource"/>
+        <!--    连通mybatis    -->
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <!--    置顶mapper.xml文件位置    -->
+<!--        <property name="mapperLocations" value="classpath:mapper/*.xml"/>  -->
+    </bean>
+    <!-- 将mybatis实现的接口注入到spring容器中 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+        <property name="basePackage" value="com.cy.hys.mapper"/>
+    </bean>
+</beans>

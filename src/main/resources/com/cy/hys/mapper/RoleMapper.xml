@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cy.hys.mapper.RoleMapper">
+
+    <select id="getPower" resultType="com.cy.hys.bean.Power">
+        select *
+        from power
+        where powerId in (select powerId from rolepower where roleId = #{roleId});
+    </select>
+
+    <select id="getRoles" resultType="String">
+        select roleName
+        from role
+    </select>
+
+    <select id="getAlreadyPower" resultType="com.cy.hys.bean.Power">
+        select *
+        from power
+        where powerId in
+            (select powerId from rolepower where roleId =
+            (select roleId from role where roleName = #{roleName}))
+    </select>
+
+    <select id="getNoPower" resultType="com.cy.hys.bean.Power">
+        select *
+        from power
+        where powerId not in
+            (select powerId from rolepower where roleId =
+            (select roleId from role where roleName = #{roleName}) and parentId != 0)
+    </select>
+
+    <select id="ifsRole" resultType="java.lang.Integer">
+        select count(*)
+        from rolepower
+        where roleId = #{roleId}
+          and powerId = #{powerId};
+
+    </select>
+
+    <insert id="insFatherRole" >
+        insert into rolepower(roleId, powerId)
+        values (#{roleId}, #{powerId});
+
+    </insert>
+
+    <insert id="insRole" parameterType="com.cy.hys.bean.Transfer">
+        insert into rolepower(roleId, powerId) value (#{roleId}, #{powerId});
+    </insert>
+
+
+    <delete id="delRole" >
+        delete
+        from rolepower
+        where roleId = #{roleId}
+          and powerId = #{powerId};
+    </delete>
+
+</mapper>
